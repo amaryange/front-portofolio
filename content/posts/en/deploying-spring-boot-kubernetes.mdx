@@ -1,0 +1,108 @@
+---
+title: "Deploying Spring Boot on Kubernetes: the complete guide"
+date: "2025-11-15"
+description: "From JVM to cluster — how to containerize a Spring Boot app and orchestrate it with Kubernetes, with built-in observability."
+tags: ["Spring Boot", "Kubernetes", "Docker", "DevOps"]
+---
+
+Kubernetes transforms the way we deploy Java applications. Here's how I approach a Spring Boot deployment from end to end.
+
+## 1. Containerizing the application
+
+Start with a multi-stage Dockerfile to keep the final image lean:
+
+```dockerfile
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY . .
+RUN ./mvnw package -DskipTests
+
+# Final stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+The final image only contains the JRE — about 180 MB vs 500 MB with a full JDK.
+
+## 2. The Kubernetes Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-api
+  template:
+    metadata:
+      labels:
+        app: spring-api
+    spec:
+      containers:
+        - name: spring-api
+          image: registry.example.com/spring-api:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+```
+
+The `readiness` and `liveness` probes are critical — Kubernetes knows when to restart a pod or remove it from the traffic pool.
+
+## 3. Observability with OpenTelemetry
+
+Spring Boot 3 supports OTEL auto-instrumentation natively. Just add the agent:
+
+```java
+// application.properties
+management.tracing.sampling.probability=1.0
+management.otlp.tracing.endpoint=http://tempo:4318/v1/traces
+management.metrics.export.otlp.url=http://prometheus:4318/v1/metrics
+```
+
+And in the `Deployment`, mount the agent:
+
+```yaml
+env:
+  - name: JAVA_TOOL_OPTIONS
+    value: "-javaagent:/otel/opentelemetry-javaagent.jar"
+  - name: OTEL_SERVICE_NAME
+    value: "spring-api"
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: "http://otel-collector:4318"
+```
+
+## Result
+
+With this setup:
+- **Zero-downtime deployments** via rolling updates
+- **Auto-scaling** via HPA on CPU/memory metrics
+- **Distributed traces** visible in Grafana Tempo
+
+The Spring Boot 3 + Kubernetes + OTEL stack is today's reference for Java systems in production.
+
+<YouTube id="dQw4w9WgXcQ" />

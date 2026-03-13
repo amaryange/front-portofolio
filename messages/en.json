@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "title": "M. Amary — Fullstack & DevOps Engineer",
+    "description": "Fullstack engineer specializing in Spring Boot, AdonisJS, React Native, Next.js, Kubernetes and observability. Available for ambitious projects."
+  },
+  "nav": {
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "contact": "Contact",
+    "blog": "Blog",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "blog": {
+    "label": "06 / BLOG",
+    "heading": "Articles",
+    "subheading": "Technical thoughts on backend, mobile and infrastructure.",
+    "empty": "No articles yet.",
+    "filterAll": "All"
+  },
+  "hero": {
+    "role": "Fullstack & DevOps Engineer",
+    "pitch": "I design scalable backends, build high-performance frontends, deliver mobile applications, and orchestrate the infrastructure that runs them. \uD83D\uDE80",
+    "ctaProjects": "View my projects ↓",
+    "ctaCV": "Download CV"
+  },
+  "about": {
+    "label": "01 / ABOUT",
+    "h2_1": "Design.",
+    "h2_2": "Build.",
+    "h2_3": "Deploy.",
+    "p1": "I design and build production-ready full-stack systems — from backend APIs (Spring Boot, AdonisJS) to web and mobile applications (React, React Native), all the way to the Kubernetes infrastructure that deploys and runs them.",
+    "p2": "Based in Abidjan, I build systems where reliability, performance, and observability are never optional.",
+    "p3": "Every project I deliver is scalable, measurable, and maintainable, designed to survive production and evolve over time.",
+    "stats": {
+      "experience": "Years of experience",
+      "projects": "Projects delivered",
+      "location": "Côte d'Ivoire"
+    }
+  },
+  "skills": {
+    "label": "02 / SKILLS",
+    "heading": "Tech stack",
+    "groups": [
+      {
+        "domain": "backend",
+        "label": "Backend",
+        "techs": [
+          "Spring Boot",
+          "AdonisJS",
+          "PostgreSQL",
+          "Redis"
+        ]
+      },
+      {
+        "domain": "mobile",
+        "label": "Mobile",
+        "techs": [
+          "React Native",
+          "Expo"
+        ]
+      },
+      {
+        "domain": "frontend",
+        "label": "Frontend",
+        "techs": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Tailwind CSS"
+        ]
+      },
+      {
+        "domain": "devops",
+        "label": "DevOps",
+        "techs": [
+          "Docker",
+          "Kubernetes",
+          "OpenTelemetry",
+          "Grafana"
+        ]
+      }
+    ]
+  },
+  "experience": {
+    "label": "03 / EXPERIENCE",
+    "heading": "Career",
+    "entries": [
+      {
+        "role": "Fullstack & DevOps Engineer",
+        "company": "Company A",
+        "period": "2023 — Present",
+        "points": [
+          "Spring Boot microservices on Kubernetes — 3× faster deployments",
+          "React Native app in production for 50,000+ active users",
+          "End-to-end observability: OpenTelemetry + Grafana across the full cluster"
+        ]
+      },
+      {
+        "role": "Senior Backend Developer",
+        "company": "Company B",
+        "period": "2021 — 2023",
+        "points": [
+          "High-availability REST APIs (99.9%) with AdonisJS — 200,000 requests/day",
+          "Monolith → Docker services migration, −40% infrastructure costs"
+        ]
+      },
+      {
+        "role": "Fullstack Developer",
+        "company": "Company C",
+        "period": "2020 — 2021",
+        "points": [
+          "Fintech platform with Next.js + Spring Boot, shipped in 4 months",
+          "CI/CD pipelines: release cycle reduced from 2 weeks to 2 days"
+        ]
+      }
+    ],
+    "presentLabel": "Present"
+  },
+  "projects": {
+    "label": "04 / PROJECTS",
+    "heading": "Featured projects",
+    "items": [
+      {
+        "name": "KubeMonitor",
+        "description": "Real-time observability dashboard for Kubernetes clusters — centralized alerts, metrics and traces.",
+        "techs": [
+          "Kubernetes",
+          "OpenTelemetry",
+          "Grafana",
+          "Go"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "FinPay Mobile",
+        "description": "Mobile payment app for the West African market — 50,000+ active users in production.",
+        "techs": [
+          "React Native",
+          "Expo",
+          "Spring Boot",
+          "PostgreSQL"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "AdonisAuth",
+        "description": "Multi-provider authentication library for AdonisJS — JWT, OAuth2 and 2FA out of the box.",
+        "techs": [
+          "AdonisJS",
+          "TypeScript",
+          "Redis"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "Portfolio",
+        "description": "This portfolio — optimized Core Web Vitals, Framer Motion animations, consistent design system.",
+        "techs": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Framer Motion"
+        ],
+        "github": "https://github.com",
+        "live": "https://amary.dev"
+      }
+    ]
+  },
+  "contact": {
+    "label": "05 / CONTACT",
+    "heading1": "Let's work",
+    "heading2": "together.",
+    "pitch": "Available for freelance projects, consulting, ambitious collaborations or just a conversation.",
+    "nameLabel": "NAME",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "EMAIL",
+    "emailPlaceholder": "john@example.com",
+    "messageLabel": "MESSAGE",
+    "messagePlaceholder": "Hi, I'd like to discuss a project…",
+    "send": "Send →",
+    "sending": "Sending…",
+    "successTitle": "Message sent.",
+    "successBody": "I'll get back to you within 48 hours.",
+    "subjectLabel": "SUBJECT",
+    "subjectPlaceholder": "Collaboration proposal",
+    "newsletterLabel": "Receive my articles by email",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "notFound": {
+    "label": "// error 404",
+    "heading": "Page not found.",
+    "description": "The route you're looking for doesn't exist or has been moved.",
+    "cta": "← Back home"
+  },
+  "footer": {
+    "copyright": "© {year} M. Amary"
+  }
+}

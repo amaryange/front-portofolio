@@ -1,26 +1,418 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Couleurs : tokens dans :root + utilitaires Tailwind générés ── */
+@theme {
+  --color-bg: #0a0a0f;
+  --color-surface: #111118;
+  --color-border: #1e1e2e;
+  --color-accent: #00d4aa;
+  --color-accent-warm: #f59e0b;
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #8888aa;
+  --color-text-muted: #444466;
 }
 
+/* ── Polices : pointent vers les vars générées par next/font au runtime ── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-syne);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-dm-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    transition: background-color 0.25s ease;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-dm-mono), ui-monospace, monospace;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  button, [role="button"] {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Mode clair : override des tokens ── */
+[data-theme="light"] {
+  --color-bg: #f4f4f8;
+  --color-surface: #ffffff;
+  --color-border: #d8d8e8;
+  --color-text-primary: #0a0a0f;
+  --color-text-secondary: #444466;
+  --color-text-muted: #8888aa;
+}
+
+/* ── Hero : grille d'arrière-plan ── */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(30, 30, 46, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 30, 46, 0.45) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 90% at 15% 50%,
+    black 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 90% at 15% 50%,
+    black 30%,
+    transparent 100%
+  );
+}
+
+/* ── Curseur terminal clignotant ── */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.8em;
+  background-color: var(--color-accent);
+  border-radius: 1px;
+  margin-left: 6px;
+  vertical-align: middle;
+  animation: blink 1.2s step-end infinite;
+}
+
+/* ── Texte avec dégradé animé teal → ambre ── */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--color-accent) 0%,
+    var(--color-accent-warm) 50%,
+    var(--color-accent) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 5s ease infinite;
+}
+
+/* ── Badges technos flottants ── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  animation: float 3s ease-in-out infinite;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.tech-badge:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-secondary);
+}
+
+/* ── Hero : tracés lumineux sur les lignes de la grille ── */
+/* Trace : dasharray via CSS, animation stroke-dashoffset gérée en SMIL pur dans le SVG */
+.hero-trace-1,
+.hero-trace-2 {
+  stroke-dasharray: 60 1960;
+  opacity: 0.45;
+}
+
+/* ── Overrides composants en mode clair ── */
+[data-theme="light"] .hero-grid {
+  background-image:
+    linear-gradient(rgba(80, 80, 130, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 80, 130, 0.12) 1px, transparent 1px);
+}
+
+[data-theme="light"] .experience-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="light"] .experience-shine {
+  /* Blanc sur blanc = invisible → on utilise un tint teal subtil */
+  background: radial-gradient(
+    480px circle at var(--x) var(--y),
+    rgba(0, 212, 170, 0.07) 0%,
+    rgba(180, 200, 255, 0.04) 40%,
+    transparent 60%
+  );
+}
+
+[data-theme="light"] .experience-card::after {
+  /* Bordure : teal visible sur fond clair */
+  background: radial-gradient(
+    200px circle at var(--x) var(--y),
+    rgba(0, 212, 170, 0.5),
+    transparent 70%
+  );
+}
+
+[data-theme="light"] .experience-card:hover {
+  border-color: rgba(0, 212, 170, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 24px rgba(0, 0, 0, 0.07),
+    0 0 20px rgba(0, 212, 170, 0.08);
+}
+
+/* ── Experience : cards liquid glass ── */
+.experience-card {
+  --x: 50%;
+  --y: 50%;
+  position: relative;
+  overflow: hidden;
+  background: rgba(17, 17, 24, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 32px rgba(0, 0, 0, 0.35);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Highlight spéculaire — suit le curseur en temps réel */
+.experience-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    480px circle at var(--x) var(--y),
+    rgba(255, 255, 255, 0.07) 0%,
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.experience-card:hover .experience-shine {
+  opacity: 1;
+}
+
+/* Reflet sur la bordure — seul le 1px de border s'allume */
+.experience-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    200px circle at var(--x) var(--y),
+    rgba(255, 255, 255, 0.22),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  padding: 1px;
+}
+
+.experience-card:hover::after {
+  opacity: 1;
+}
+
+.experience-card:hover {
+  border-color: rgba(0, 212, 170, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 32px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(0, 212, 170, 0.04);
+}
+
+/* ── Blog : prose + blocs de code (rehype-pretty-code) ── */
+
+/* Blocs de code générés par rehype-pretty-code */
+.blog-prose [data-rehype-pretty-code-figure] {
+  margin: 1.5rem 0;
+}
+
+.blog-prose pre {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface) !important;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+/* Titre du langage (optionnel) */
+.blog-prose [data-rehype-pretty-code-title] {
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: var(--color-surface);
+  padding: 0.4rem 1rem;
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.blog-prose [data-rehype-pretty-code-title] + pre {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Tokens de syntaxe — rehype-pretty-code injecte des spans avec data-token-type */
+.blog-prose pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  color: inherit;
+}
+
+/* Ligne mise en évidence */
+.blog-prose pre .line--highlighted {
+  background-color: rgba(0, 212, 170, 0.08);
+  border-left: 2px solid var(--color-accent);
+  padding-left: calc(1.5rem - 2px);
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ── Page 404 : glitch chromatique ── */
+.glitch-404 {
+  position: relative;
+  display: inline-block;
+  animation: glitch-base 8s linear infinite;
+  will-change: transform;
+}
+
+/* Calque teal — tranche haute */
+.glitch-404::before,
+.glitch-404::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font: inherit;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+}
+
+.glitch-404::before {
+  background: var(--color-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  clip-path: polygon(0 0, 100% 0, 100% 42%, 0 42%);
+  animation: glitch-top 8s linear infinite;
+  will-change: transform, opacity;
+}
+
+/* Calque ambre — tranche basse */
+.glitch-404::after {
+  background: var(--color-accent-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  clip-path: polygon(0 58%, 100% 58%, 100% 100%, 0 100%);
+  animation: glitch-bottom 8s linear infinite 0.25s;
+  will-change: transform, opacity;
+}
+
+/* Légère secousse du texte principal */
+@keyframes glitch-base {
+  0%, 78%, 84.5%, 100% { transform: none; }
+  79.5%  { transform: translateX(2px); }
+  81%    { transform: translateX(-2px); }
+  83%    { transform: translateX(1px); }
+}
+
+/* Calque teal */
+@keyframes glitch-top {
+  0%, 78%, 84.5%, 100% { opacity: 0; transform: none; }
+  79.5%  { opacity: 0.85; transform: translate(-5px, -1px); }
+  81%    { opacity: 0.7;  transform: translate(5px, 1px); }
+  83%    { opacity: 0.85; transform: translate(-3px, 0); }
+}
+
+/* Calque ambre */
+@keyframes glitch-bottom {
+  0%, 78%, 84.5%, 100% { opacity: 0; transform: none; }
+  79.5%  { opacity: 0.75; transform: translate(5px, 1px); }
+  81%    { opacity: 0.6;  transform: translate(-4px, -1px); }
+  83%    { opacity: 0.75; transform: translate(3px, 0); }
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-cursor {
+    animation: none;
+  }
+
+  .gradient-text {
+    animation: none;
+    background-position: 0% 50%;
+  }
+
+  .tech-badge {
+    animation: none !important;
+  }
+
+  .hero-trace-1,
+  .hero-trace-2 {
+    display: none;
+  }
+
+  .glitch-404,
+  .glitch-404::before,
+  .glitch-404::after {
+    animation: none;
+  }
 }

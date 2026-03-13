@@ -1,0 +1,84 @@
+---
+title: "Monorepo architecture for React Native + Next.js"
+date: "2025-09-03"
+description: "Sharing code between a React Native mobile app and a Next.js frontend in a single pnpm monorepo — friction-free."
+tags: ["React Native", "Next.js", "TypeScript", "pnpm"]
+---
+
+A well-structured monorepo lets you share business logic, TypeScript types, and UI components between a mobile app and a web frontend. Here's the architecture I use.
+
+## Monorepo structure
+
+```
+apps/
+  mobile/          # React Native (Expo)
+  web/             # Next.js
+packages/
+  core/            # Business logic, API clients, types
+  ui/              # Shared components (if cross-platform)
+pnpm-workspace.yaml
+```
+
+## pnpm configuration
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+## Shared package: `@repo/core`
+
+```typescript
+// packages/core/src/api/client.ts
+export async function fetchUser(id: string) {
+  const res = await fetch(`${process.env.API_URL}/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<User>;
+}
+
+// packages/core/src/types/user.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+}
+```
+
+## Consuming in Next.js
+
+```typescript
+import { fetchUser } from "@repo/core/api/client";
+import type { User } from "@repo/core/types/user";
+
+export default async function ProfilePage({ params }: { params: { id: string } }) {
+  const user = await fetchUser(params.id);
+  return <Profile user={user} />;
+}
+```
+
+## Consuming in React Native
+
+```typescript
+import { fetchUser } from "@repo/core/api/client";
+
+export function useUser(id: string) {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    fetchUser(id).then(setUser);
+  }, [id]);
+
+  return user;
+}
+```
+
+## Concrete benefits
+
+- **Zero duplication** of types or API logic
+- **Atomic refactoring** — a type change propagates everywhere
+- **Optimized CI** — pnpm only rebuilds affected packages
+
+This architecture significantly reduces the surface area for cross-platform bugs.

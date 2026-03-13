@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "title": "M. Amary — Ingénieur Fullstack & DevOps",
+    "description": "Ingénieur Fullstack spécialisé en Spring Boot, AdonisJS, React Native, Next.js, Kubernetes et observabilité. Disponible pour des projets ambitieux."
+  },
+  "nav": {
+    "about": "À propos",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "contact": "Contact",
+    "blog": "Blog",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "blog": {
+    "label": "06 / BLOG",
+    "heading": "Articles",
+    "subheading": "Réflexions techniques sur le backend, le mobile et l'infrastructure.",
+    "empty": "Aucun article pour l'instant.",
+    "filterAll": "Tous"
+  },
+  "hero": {
+    "role": "Ingénieur Fullstack & DevOps",
+    "pitch": "Je conçois des backends scalables, développe des frontends performants, livre des applications mobiles et orchestre l’infrastructure qui les fait tourner.\uD83D\uDE80",
+    "ctaProjects": "Voir mes projets ↓",
+    "ctaCV": "Télécharger le CV"
+  },
+  "about": {
+    "label": "01 / À PROPOS",
+    "h2_1": "Concevoir.",
+    "h2_2": "Construire.",
+    "h2_3": "Déployer.",
+    "p1": "Je conçois et construis des systèmes full-stack prêts pour la production — des APIs backend (Spring Boot, AdonisJS) aux applications web et mobiles (React, React Native), jusqu’à l’infrastructure Kubernetes qui les déploie et les opère.",
+    "p2": "Basé à Abidjan, je crée des systèmes où la fiabilité, la performance et l’observabilité ne sont jamais optionnelles.",
+    "p3": "Chaque projet que je livre est scalable, mesurable et maintenable, pensé pour durer en production et évoluer avec le temps.",
+    "stats": {
+      "experience": "Années d'expérience",
+      "projects": "Projets livrés",
+      "location": "Côte d'Ivoire"
+    }
+  },
+  "skills": {
+    "label": "02 / COMPÉTENCES",
+    "heading": "Stack technique",
+    "groups": [
+      {
+        "domain": "backend",
+        "label": "Backend",
+        "techs": [
+          "Spring Boot",
+          "AdonisJS",
+          "PostgreSQL",
+          "Redis"
+        ]
+      },
+      {
+        "domain": "mobile",
+        "label": "Mobile",
+        "techs": [
+          "React Native",
+          "Expo"
+        ]
+      },
+      {
+        "domain": "frontend",
+        "label": "Frontend",
+        "techs": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Tailwind CSS"
+        ]
+      },
+      {
+        "domain": "devops",
+        "label": "DevOps",
+        "techs": [
+          "Docker",
+          "Kubernetes",
+          "OpenTelemetry",
+          "Grafana"
+        ]
+      }
+    ]
+  },
+  "experience": {
+    "label": "03 / EXPÉRIENCE",
+    "heading": "Parcours",
+    "entries": [
+      {
+        "role": "Ingénieur Fullstack & DevOps",
+        "company": "Entreprise A",
+        "period": "2023 — Présent",
+        "points": [
+          "Architecture de microservices Spring Boot sur Kubernetes — déploiement 3× plus rapide",
+          "Application React Native en production pour 50 000+ utilisateurs actifs",
+          "Observabilité bout-en-bout : OpenTelemetry + Grafana sur l'ensemble du cluster"
+        ]
+      },
+      {
+        "role": "Développeur Backend Senior",
+        "company": "Entreprise B",
+        "period": "2021 — 2023",
+        "points": [
+          "APIs REST haute disponibilité (99.9 %) en AdonisJS — 200 000 requêtes/jour",
+          "Migration monolithe → services Docker, −40 % de coûts infrastructure"
+        ]
+      },
+      {
+        "role": "Développeur Fullstack",
+        "company": "Entreprise C",
+        "period": "2020 — 2021",
+        "points": [
+          "Plateforme fintech Next.js + Spring Boot, go-live en 4 mois",
+          "Pipelines CI/CD : cycle de release ramené de 2 semaines à 2 jours"
+        ]
+      }
+    ],
+    "presentLabel": "Présent"
+  },
+  "projects": {
+    "label": "04 / PROJETS",
+    "heading": "Projets phares",
+    "items": [
+      {
+        "name": "KubeMonitor",
+        "description": "Dashboard d'observabilité temps réel pour clusters Kubernetes — alertes, métriques et traces centralisés.",
+        "techs": [
+          "Kubernetes",
+          "OpenTelemetry",
+          "Grafana",
+          "Go"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "FinPay Mobile",
+        "description": "Application de paiement mobile pour le marché ouest-africain — 50 000+ utilisateurs actifs en production.",
+        "techs": [
+          "React Native",
+          "Expo",
+          "Spring Boot",
+          "PostgreSQL"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "AdonisAuth",
+        "description": "Librairie d'authentification multi-provider pour AdonisJS — JWT, OAuth2 et 2FA clé en main.",
+        "techs": [
+          "AdonisJS",
+          "TypeScript",
+          "Redis"
+        ],
+        "github": "https://github.com",
+        "live": null
+      },
+      {
+        "name": "Portfolio",
+        "description": "Ce portfolio — Core Web Vitals optimisés, animations Framer Motion, design système cohérent.",
+        "techs": [
+          "Next.js",
+          "TypeScript",
+          "Tailwind CSS",
+          "Framer Motion"
+        ],
+        "github": "https://github.com",
+        "live": "https://amary.dev"
+      }
+    ]
+  },
+  "contact": {
+    "label": "05 / CONTACT",
+    "heading1": "Travaillons",
+    "heading2": "ensemble.",
+    "pitch": "Disponible pour des missions freelance, des consultances, des collaborations sur des projets ambitieux ou simplement pour échanger.",
+    "nameLabel": "NOM",
+    "namePlaceholder": "Jean Dupont",
+    "emailLabel": "EMAIL",
+    "emailPlaceholder": "jean@exemple.com",
+    "messageLabel": "MESSAGE",
+    "messagePlaceholder": "Bonjour, je voudrais discuter d'un projet…",
+    "send": "Envoyer →",
+    "sending": "Envoi en cours…",
+    "successTitle": "Message envoyé.",
+    "successBody": "Je reviens vers vous sous 48 h.",
+    "subjectLabel": "SUJET",
+    "subjectPlaceholder": "Proposition de collaboration",
+    "newsletterLabel": "Recevoir mes articles par email",
+    "errorGeneric": "Une erreur est survenue. Réessayez."
+  },
+  "notFound": {
+    "label": "// erreur 404",
+    "heading": "Page introuvable.",
+    "description": "La route que vous cherchez n'existe pas ou a été déplacée.",
+    "cta": "← Retour à l'accueil"
+  },
+  "footer": {
+    "copyright": "© {year} M. Amary"
+  }
+}

@@ -1,0 +1,84 @@
+---
+title: "Architecture monorepo pour React Native + Next.js"
+date: "2025-09-03"
+description: "Partager du code entre une app mobile React Native et un frontend Next.js dans un seul monorepo pnpm — sans friction."
+tags: ["React Native", "Next.js", "TypeScript", "pnpm"]
+---
+
+Un monorepo bien structuré permet de partager la logique métier, les types TypeScript et les composants UI entre une app mobile et un frontend web. Voici l'architecture que j'utilise.
+
+## Structure du monorepo
+
+```
+apps/
+  mobile/          # React Native (Expo)
+  web/             # Next.js
+packages/
+  core/            # Logique métier, API clients, types
+  ui/              # Composants partagés (si cross-platform)
+pnpm-workspace.yaml
+```
+
+## Configuration pnpm
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+## Package partagé : `@repo/core`
+
+```typescript
+// packages/core/src/api/client.ts
+export async function fetchUser(id: string) {
+  const res = await fetch(`${process.env.API_URL}/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<User>;
+}
+
+// packages/core/src/types/user.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+}
+```
+
+## Consommation dans Next.js
+
+```typescript
+import { fetchUser } from "@repo/core/api/client";
+import type { User } from "@repo/core/types/user";
+
+export default async function ProfilePage({ params }: { params: { id: string } }) {
+  const user = await fetchUser(params.id);
+  return <Profile user={user} />;
+}
+```
+
+## Consommation dans React Native
+
+```typescript
+import { fetchUser } from "@repo/core/api/client";
+
+export function useUser(id: string) {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    fetchUser(id).then(setUser);
+  }, [id]);
+
+  return user;
+}
+```
+
+## Avantages concrets
+
+- **Zéro duplication** de types ou de logique API
+- **Refactoring atomic** — un changement de type se propage partout
+- **CI optimisé** — pnpm ne rebuild que les packages affectés
+
+Cette architecture réduit la surface de bugs inter-plateformes de manière significative.

@@ -9,12 +9,31 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@types/mdx": "^2.0.13",
+    "framer-motion": "^12.34.3",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
     "next": "16.1.6",
+    "next-intl": "^4.8.3",
+    "next-mdx-remote": "^6.0.0",
+    "posthog-js": "^1.359.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-pretty-code": "^0.14.3",
+    "shiki": "^4.0.1",
+    "simple-icons": "^16.10.0",
+    "sonner": "^2.0.7",
+    "up-fetch": "^2.5.1",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/highlight.js": "^10.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
