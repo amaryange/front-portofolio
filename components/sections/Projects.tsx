@@ -34,7 +34,7 @@ export default function Projects({ projects }: Props) {
                   name={proj.title}
                   description={proj.description}
                   techs={proj.techs.map((t) => t.name)}
-                  github={proj.githubUrl ?? ""}
+                  github={proj.githubUrl ?? null}
                   live={proj.url}
                 />
               </motion.div>

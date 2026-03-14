@@ -122,6 +122,7 @@
   "projects": {
     "label": "04 / PROJECTS",
     "heading": "Featured projects",
+    "internalDeploy": "// internal deployment",
     "items": [
       {
         "name": "KubeMonitor",

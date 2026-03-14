@@ -45,7 +45,7 @@ export default function Contact() {
   const socialLinks = [
     {
       name: "GitHub",
-      href: "https://github.com",
+      href: "https://github.com/amaryange",
       Icon: () => (
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
           <path d={siGithub.path} />
@@ -54,12 +54,12 @@ export default function Contact() {
     },
     {
       name: "LinkedIn",
-      href: "https://linkedin.com/in/amary",
+      href: "https://www.linkedin.com/in/amary-meless",
       Icon: LinkedInIcon,
     },
     {
-      name: "contact@amary.dev",
-      href: "mailto:contact@amary.dev",
+      name: "meless@amarycode.dev",
+      href: "mailto:meless@amarycode.dev",
       Icon: () => (
         <span className="font-mono text-sm leading-none text-accent">@</span>
       ),

@@ -18,7 +18,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { reorderProjectsAction } from "@/app/admin/(panel)/portfolio/actions";
+import { reorderExperiencesAction, reorderProjectsAction } from "@/app/admin/(panel)/portfolio/actions";
 import type { Experience, Project } from "@/lib/api/portfolio";
 
 type Tab = "experience" | "projects" | "skills";
@@ -87,7 +87,70 @@ function formatPeriod(startDate: string, endDate: string | null) {
   return `${start} — ${end}`;
 }
 
-function ExperienceList({ entries }: { entries: Experience[] }) {
+function SortableExperienceRow({ entry }: { entry: Experience }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: entry.id });
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={`grid grid-cols-[28px_1fr_180px_120px_60px_80px] items-center gap-4 px-5 py-4 transition-colors duration-100 ${
+        isDragging ? "bg-accent/5 opacity-75 shadow-lg" : "hover:bg-accent/[0.03]"
+      }`}
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        tabIndex={-1}
+        className="cursor-grab text-text-muted active:cursor-grabbing"
+        aria-label="Déplacer"
+      >
+        <svg viewBox="0 0 10 16" className="h-3.5 w-2.5 fill-current">
+          <circle cx="2" cy="2" r="1.2" /><circle cx="8" cy="2" r="1.2" />
+          <circle cx="2" cy="8" r="1.2" /><circle cx="8" cy="8" r="1.2" />
+          <circle cx="2" cy="14" r="1.2" /><circle cx="8" cy="14" r="1.2" />
+        </svg>
+      </button>
+      <Link
+        href={`/admin/portfolio/experience/${entry.id}/edit`}
+        className="group col-span-5 grid grid-cols-[1fr_180px_120px_60px_80px] items-center gap-4"
+      >
+        <span className="truncate font-mono text-sm text-text-primary">
+          {entry.position || <span className="text-text-muted italic">Sans titre</span>}
+        </span>
+        <span className="truncate font-mono text-xs text-text-secondary">{entry.company}</span>
+        <span className="font-mono text-xs text-text-muted">{formatPeriod(entry.startDate, entry.endDate)}</span>
+        <span className="font-mono text-[0.6rem] uppercase tracking-wider text-text-muted">{entry.locale}</span>
+        <span className="flex items-center justify-end gap-1.5 font-mono text-xs text-text-muted transition-colors group-hover:text-accent">
+          <EditIcon />
+          Éditer
+        </span>
+      </Link>
+    </li>
+  );
+}
+
+function ExperienceList({ entries: initial }: { entries: Experience[] }) {
+  const [entries, setEntries] = useState(initial);
+  const [mounted, setMounted] = useState(false);
+  const [, startTransition] = useTransition();
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  useEffect(() => setMounted(true), []);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = entries.findIndex((e) => e.id === active.id);
+    const newIndex = entries.findIndex((e) => e.id === over.id);
+    const reordered = arrayMove(entries, oldIndex, newIndex);
+    setEntries(reordered);
+    startTransition(async () => {
+      await reorderExperiencesAction(reordered.map((e) => e.id));
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -120,32 +183,28 @@ function ExperienceList({ entries }: { entries: Experience[] }) {
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-surface">
-          <div className="grid grid-cols-[1fr_180px_120px_60px_80px] border-b border-border bg-bg px-5 py-2.5">
-            {["POSTE", "ENTREPRISE", "PÉRIODE", "LOCALE", ""].map((h) => (
-              <span key={h} className="font-mono text-[0.6rem] tracking-wider text-text-muted">{h}</span>
+          <div className="grid grid-cols-[28px_1fr_180px_120px_60px_80px] border-b border-border bg-bg px-5 py-2.5">
+            {["", "POSTE", "ENTREPRISE", "PÉRIODE", "LOCALE", ""].map((h, i) => (
+              <span key={i} className="font-mono text-[0.6rem] tracking-wider text-text-muted">{h}</span>
             ))}
           </div>
-          <ul className="divide-y divide-border">
-            {entries.map((entry) => (
-              <li key={entry.id}>
-                <Link
-                  href={`/admin/portfolio/experience/${entry.id}/edit`}
-                  className="group grid grid-cols-[1fr_180px_120px_60px_80px] items-center gap-2 px-5 py-4 transition-colors duration-100 hover:bg-accent/[0.03]"
-                >
-                  <span className="truncate font-mono text-sm text-text-primary">
-                    {entry.position || <span className="text-text-muted italic">Sans titre</span>}
-                  </span>
-                  <span className="truncate font-mono text-xs text-text-secondary">{entry.company}</span>
-                  <span className="font-mono text-xs text-text-muted">{formatPeriod(entry.startDate, entry.endDate)}</span>
-                  <span className="font-mono text-[0.6rem] uppercase tracking-wider text-text-muted">{entry.locale}</span>
-                  <span className="flex items-center justify-end gap-1.5 font-mono text-xs text-text-muted transition-colors group-hover:text-accent">
-                    <EditIcon />
-                    Éditer
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {mounted ? (
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={entries.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+                <ul className="divide-y divide-border">
+                  {entries.map((entry) => (
+                    <SortableExperienceRow key={entry.id} entry={entry} />
+                  ))}
+                </ul>
+              </SortableContext>
+            </DndContext>
+          ) : (
+            <ul className="divide-y divide-border">
+              {entries.map((entry) => (
+                <SortableExperienceRow key={entry.id} entry={entry} />
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>

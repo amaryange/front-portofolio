@@ -11,7 +11,7 @@ export default async function Footer() {
         </p>
         <div className="flex gap-6">
           <a
-            href="https://github.com"
+            href="https://github.com/amaryange"
             target="_blank"
             rel="noopener noreferrer"
             className="font-mono text-sm text-text-muted transition-colors duration-150 hover:text-accent"
@@ -19,7 +19,7 @@ export default async function Footer() {
             GitHub
           </a>
           <a
-            href="https://linkedin.com/in/amary"
+            href="https://www.linkedin.com/in/amary-meless"
             target="_blank"
             rel="noopener noreferrer"
             className="font-mono text-sm text-text-muted transition-colors duration-150 hover:text-accent"
@@ -27,7 +27,7 @@ export default async function Footer() {
             LinkedIn
           </a>
           <a
-            href="mailto:contact@amary.dev"
+            href="mailto:meless@amarycode.dev"
             className="font-mono text-sm text-text-muted transition-colors duration-150 hover:text-accent"
           >
             Email

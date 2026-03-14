@@ -218,6 +218,20 @@ export async function removeSkillAction(
   }
 }
 
+export async function reorderExperiencesAction(
+  ids: string[]
+): Promise<{ error?: string }> {
+  try {
+    await serverFetch("/admin/experiences/reorder", {
+      method: "PUT",
+      body: JSON.stringify({ ids }),
+    });
+    return {};
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+}
+
 export async function reorderProjectsAction(
   ids: string[]
 ): Promise<{ error?: string }> {

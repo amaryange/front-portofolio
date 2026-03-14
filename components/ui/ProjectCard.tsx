@@ -1,12 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface ProjectCardProps {
   name: string;
   description: string;
   techs: string[];
-  github: string;
+  github: string | null;
   live?: string | null;
 }
 
@@ -17,6 +18,7 @@ export default function ProjectCard({
   github,
   live,
 }: ProjectCardProps) {
+  const t = useTranslations("projects");
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -50,14 +52,20 @@ export default function ProjectCard({
 
       {/* Liens */}
       <div className="mt-4 flex items-center gap-5 border-t border-border pt-4">
-        <a
-          href={github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-xs text-text-muted transition-colors duration-150 hover:text-accent"
-        >
-          GitHub ↗
-        </a>
+        {github ? (
+          <a
+            href={github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-xs text-text-muted transition-colors duration-150 hover:text-accent"
+          >
+            GitHub ↗
+          </a>
+        ) : (
+          <span className="font-mono text-xs text-text-muted">
+            {t("internalDeploy")}
+          </span>
+        )}
         {live && (
           <a
             href={live}

@@ -122,6 +122,7 @@
   "projects": {
     "label": "04 / PROJETS",
     "heading": "Projets phares",
+    "internalDeploy": "// déployé en interne",
     "items": [
       {
         "name": "KubeMonitor",
