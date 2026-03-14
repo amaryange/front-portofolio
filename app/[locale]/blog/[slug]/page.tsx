@@ -40,12 +40,8 @@ const mdxOptions = {
 export default async function BlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
 
-  let post;
-  try {
-    post = await getPost(slug, locale as "fr" | "en");
-  } catch {
-    notFound();
-  }
+  const post = await getPost(slug, locale as "fr" | "en").catch(() => null);
+  if (!post) notFound();
 
   const date = post.publishedAt ?? post.createdAt;
   const formattedDate = new Date(date).toLocaleDateString(
@@ -79,7 +75,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             </time>
             <span className="text-text-muted" aria-hidden>·</span>
             <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
+              {(post.tags ?? []).map((tag) => (
                 <span
                   key={tag}
                   className="rounded-full border border-border px-2.5 py-0.5 font-mono text-[0.65rem] tracking-wider text-text-muted"
