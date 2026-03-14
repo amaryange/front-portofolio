@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     },
     body: req.body,
     duplex: "half",
-  });
+  } as RequestInit);
 
   const body = await upstream.json();
   return NextResponse.json(body, { status: upstream.status });
