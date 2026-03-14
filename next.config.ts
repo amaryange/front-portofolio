@@ -5,9 +5,12 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  outputFileTracingIncludes: {
-    "/**": ["./node_modules/shiki/**/*"],
-  },
+  serverExternalPackages: [
+    "next-mdx-remote",
+    "@mdx-js/mdx",
+    "shiki",
+    "rehype-pretty-code",
+  ],
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
