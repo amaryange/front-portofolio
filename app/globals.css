@@ -38,6 +38,22 @@
     cursor: pointer;
   }
 
+  /* ── react-day-picker : override CSS vars pour le thème dark ── */
+  .rdp-root {
+    --rdp-accent-color: #f59e0b;
+    --rdp-accent-background-color: rgba(245, 158, 11, 0.15);
+    --rdp-day-height: 2rem;
+    --rdp-day-width: 2rem;
+    --rdp-day_button-height: 1.75rem;
+    --rdp-day_button-width: 1.75rem;
+    --rdp-selected-font: 600;
+    --rdp-outside-opacity: 0.25;
+    --rdp-disabled-opacity: 0.2;
+    color: #8888aa;
+    font-family: var(--font-dm-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+  }
+
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-bg);

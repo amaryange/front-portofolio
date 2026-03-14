@@ -21,6 +21,7 @@
     "next-mdx-remote": "^6.0.0",
     "posthog-js": "^1.359.1",
     "react": "19.2.3",
+    "react-day-picker": "^9.14.0",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",

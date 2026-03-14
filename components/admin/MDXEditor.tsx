@@ -1,7 +1,10 @@
 "use client";
 
 import "highlight.js/styles/github-dark.css";
+import "react-day-picker/style.css";
 import { useState, useCallback, useRef, useTransition } from "react";
+import { DayPicker } from "react-day-picker";
+import { fr } from "react-day-picker/locale";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -9,10 +12,11 @@ import rehypeHighlight from "rehype-highlight";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import TagsInput from "@/components/ui/TagsInput";
 import MediaUploader from "@/components/admin/MediaUploader";
-import { savePost, publishPost, schedulePost, deletePost, type PostFields } from "@/app/admin/(panel)/posts/actions";
+import { toast } from "sonner";
+import { savePost, publishPost, deletePost, type PostFields } from "@/app/admin/(panel)/posts/actions";
 
 type View = "editor" | "split" | "preview";
-type SaveStatus = "idle" | "saving" | "saved" | "error";
+type SaveStatus = "idle" | "saving";
 type DeleteState = "idle" | "confirm";
 type ScheduleState = "idle" | "open";
 
@@ -133,7 +137,9 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [deleteState, setDeleteState] = useState<DeleteState>("idle");
   const [scheduleState, setScheduleState] = useState<ScheduleState>("idle");
-  const [scheduledAt, setScheduledAt] = useState("");
+  const [scheduledDay, setScheduledDay] = useState<Date | undefined>();
+  const [scheduleHour, setScheduleHour] = useState("09");
+  const [scheduleMinute, setScheduleMinute] = useState("00");
   const [isPending, startTransition] = useTransition();
   const [mediaOpen, setMediaOpen] = useState(false);
   const [coverOpen, setCoverOpen] = useState(false);
@@ -179,31 +185,33 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
     setSaveStatus("saving");
     startTransition(async () => {
       const result = await savePost(fields, savedPostId);
+      setSaveStatus("idle");
       if (result.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        toast.error(result.error);
       } else {
         setSavedPostId(result.id);
         setSavedSlug(result.slug);
-        setSaveStatus("saved");
-        setTimeout(() => setSaveStatus("idle"), 2500);
+        toast.success("Article enregistré");
       }
     });
   };
 
   const handlePublish = () => {
+    if (!fields.title.trim()) { toast.error("Le titre est requis"); return; }
+    if (!fields.description.trim()) { toast.error("La description est requise"); return; }
+    if (!fields.content.trim()) { toast.error("Le contenu est requis"); return; }
     setSaveStatus("saving");
     startTransition(async () => {
       const saved = await savePost(fields, savedPostId);
       if (saved.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        setSaveStatus("idle");
+        toast.error(saved.error);
         return;
       }
       const pubResult = await publishPost(saved.id);
+      setSaveStatus("idle");
       if (pubResult.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        toast.error(pubResult.error);
       } else {
         router.push("/admin/posts");
       }
@@ -214,8 +222,7 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
     startTransition(async () => {
       const result = await deletePost(savedPostId!);
       if (result.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        toast.error(result.error);
         setDeleteState("idle");
       } else {
         router.push("/admin/posts");
@@ -224,21 +231,33 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
   };
 
   const handleSchedule = () => {
-    if (!scheduledAt) return;
+    if (!scheduledDay) { toast.error("Sélectionne une date de publication"); return; }
+    if (!fields.title.trim()) { toast.error("Le titre est requis"); return; }
+    if (!fields.description.trim()) { toast.error("La description est requise"); return; }
+    if (!fields.content.trim()) { toast.error("Le contenu est requis"); return; }
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const formatted = `${scheduledDay.getFullYear()}-${pad(scheduledDay.getMonth() + 1)}-${pad(scheduledDay.getDate())} ${scheduleHour}:${scheduleMinute}:00`;
     setSaveStatus("saving");
     setScheduleState("idle");
     startTransition(async () => {
       const saved = await savePost(fields, savedPostId);
       if (saved.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        setSaveStatus("idle");
+        toast.error(saved.error);
         return;
       }
-      const result = await schedulePost(saved.id, new Date(scheduledAt).toISOString());
-      if (result.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+      const res = await fetch(`/api/admin/posts/${saved.id}/schedule`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scheduledAt: formatted }),
+      });
+      setSaveStatus("idle");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { errors?: { message: string }[]; message?: string; error?: string };
+        const msg = data.errors?.[0]?.message ?? data.message ?? data.error ?? `Erreur ${res.status}`;
+        toast.error(msg);
       } else {
+        toast.success("Publication planifiée");
         router.push("/admin/posts");
       }
     });
@@ -286,23 +305,17 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <AnimatePresence mode="wait">
-            {saveStatus !== "idle" && (
+          <AnimatePresence>
+            {saveStatus === "saving" && (
               <motion.span
-                key={saveStatus}
+                key="saving"
                 variants={statusVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={`font-mono text-xs ${
-                  saveStatus === "saved"  ? "text-accent" :
-                  saveStatus === "error"  ? "text-red-400" :
-                  "text-text-muted"
-                }`}
+                className="font-mono text-xs text-text-muted"
               >
-                {saveStatus === "saving" && "Sauvegarde…"}
-                {saveStatus === "saved"  && "✓ Enregistré"}
-                {saveStatus === "error"  && "✗ Erreur"}
+                Sauvegarde…
               </motion.span>
             )}
           </AnimatePresence>
@@ -345,32 +358,94 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
             exit="exit"
             className="overflow-hidden"
           >
-            <div className="flex items-center gap-4 border-b border-amber-500/20 bg-amber-500/5 px-6 py-3">
-              <span className="shrink-0 font-mono text-xs text-amber-400">
-                ⏰ Publication planifiée
-              </span>
-              <input
-                type="datetime-local"
-                value={scheduledAt}
-                onChange={(e) => setScheduledAt(e.target.value)}
-                min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
-                className="rounded border border-border bg-bg px-3 py-1 font-mono text-xs text-text-primary outline-none focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500/20"
-              />
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { setScheduleState("idle"); setScheduledAt(""); }}
-                  disabled={isPending}
-                  className="rounded border border-border px-3 py-1 font-mono text-xs text-text-muted transition-colors hover:text-text-primary disabled:opacity-40"
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={handleSchedule}
-                  disabled={isPending || !scheduledAt}
-                  className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-1 font-mono text-xs text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-40"
-                >
-                  {isPending ? "Planification…" : "Confirmer →"}
-                </button>
+            <div className="flex flex-wrap gap-6 border-b border-amber-500/20 bg-amber-500/5 px-6 py-5">
+              {/* Calendrier */}
+              <div className="flex flex-col gap-2">
+                <p className="font-mono text-[0.65rem] tracking-wider text-amber-400">⏰ DATE DE PUBLICATION</p>
+                <DayPicker
+                  mode="single"
+                  selected={scheduledDay}
+                  onSelect={setScheduledDay}
+                  disabled={{ before: new Date() }}
+                  locale={fr}
+                  components={{
+                    Chevron: ({ orientation }) => (
+                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        {orientation === "left"
+                          ? <polyline points="15 18 9 12 15 6" />
+                          : <polyline points="9 18 15 12 9 6" />}
+                      </svg>
+                    ),
+                  }}
+                  classNames={{
+                    root: "!m-0",
+                    month_caption: "relative flex items-center justify-center py-1 mb-3",
+                    caption_label: "font-mono text-xs font-semibold text-text-primary capitalize",
+                    nav: "absolute inset-x-0 top-0 flex items-center justify-between",
+                    button_previous: "flex h-6 w-6 items-center justify-center rounded border border-border bg-surface text-text-muted transition-all hover:border-amber-500/40 hover:bg-amber-500/10 hover:text-amber-400",
+                    button_next: "flex h-6 w-6 items-center justify-center rounded border border-border bg-surface text-text-muted transition-all hover:border-amber-500/40 hover:bg-amber-500/10 hover:text-amber-400",
+                    month_grid: "w-full border-collapse",
+                    weekdays: "flex",
+                    weekday: "flex-1 pb-2 text-center font-mono text-[0.6rem] uppercase text-text-muted",
+                    week: "flex",
+                    day: "flex-1 flex items-center justify-center p-0.5",
+                    day_button: "h-7 w-7 rounded font-mono text-xs text-text-secondary transition-colors hover:bg-amber-500/10 hover:text-amber-400",
+                    selected: "!bg-amber-500/20 !text-amber-400 !font-semibold rounded",
+                    today: "!text-accent !font-semibold",
+                    outside: "!opacity-25",
+                    disabled: "!opacity-20 !cursor-not-allowed",
+                  }}
+                />
+              </div>
+
+              {/* Heure + actions */}
+              <div className="flex flex-col justify-between gap-6">
+                <div className="flex flex-col gap-3">
+                  <p className="font-mono text-[0.65rem] tracking-wider text-text-muted">HEURE</p>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={scheduleHour}
+                      onChange={(e) => setScheduleHour(e.target.value)}
+                      className="rounded border border-border bg-bg px-2 py-1.5 font-mono text-sm text-text-primary outline-none focus:border-amber-500/60"
+                    >
+                      {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0")).map((h) => (
+                        <option key={h} value={h}>{h}</option>
+                      ))}
+                    </select>
+                    <span className="font-mono text-lg text-text-muted">:</span>
+                    <select
+                      value={scheduleMinute}
+                      onChange={(e) => setScheduleMinute(e.target.value)}
+                      className="rounded border border-border bg-bg px-2 py-1.5 font-mono text-sm text-text-primary outline-none focus:border-amber-500/60"
+                    >
+                      {["00", "15", "30", "45"].map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+                  {scheduledDay && (
+                    <p className="font-mono text-xs text-amber-400/80">
+                      {scheduledDay.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} à {scheduleHour}h{scheduleMinute}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { setScheduleState("idle"); setScheduledDay(undefined); setScheduleHour("09"); setScheduleMinute("00"); }}
+                    disabled={isPending}
+                    className="rounded border border-border px-3 py-1.5 font-mono text-xs text-text-muted transition-colors hover:text-text-primary disabled:opacity-40"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleSchedule}
+                    disabled={isPending || !scheduledDay}
+                    className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 font-mono text-xs text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-40"
+                  >
+                    {isPending ? "Planification…" : "Confirmer →"}
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>

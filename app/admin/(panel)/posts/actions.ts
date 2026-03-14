@@ -72,22 +72,6 @@ export async function publishPost(id: string): Promise<{ error?: string }> {
   }
 }
 
-export async function schedulePost(
-  id: string,
-  scheduledAt: string
-): Promise<{ error?: string }> {
-  try {
-    await serverFetch(`/admin/posts/${id}/schedule`, {
-      method: "POST",
-      body: JSON.stringify({ scheduledAt }),
-    });
-    revalidatePath("/admin/posts");
-    return {};
-  } catch (err) {
-    return { error: (err as Error).message };
-  }
-}
-
 export async function deletePost(id: string): Promise<{ error?: string }> {
   try {
     await serverFetch(`/admin/posts/${id}`, { method: "DELETE" });

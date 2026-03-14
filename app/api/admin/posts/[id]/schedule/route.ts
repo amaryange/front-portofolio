@@ -9,23 +9,25 @@ async function getToken(): Promise<string | null> {
   return t && t !== "dev-token" ? t : null;
 }
 
-/** POST /api/media — proxie l'upload vers AdonisJS */
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const token = await getToken();
   if (!token) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
-  // Passer le body brut pour préserver les types MIME du multipart
-  const upstream = await fetch(`${API}/api/v1/admin/media`, {
+  const { id } = await params;
+  const body = await req.json();
+
+  const upstream = await fetch(`${API}/api/v1/admin/posts/${id}/schedule`, {
     method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-      "content-type": req.headers.get("content-type") ?? "",
     },
-    // @ts-expect-error duplex requis pour le streaming en Node.js
-    body: req.body,
-    duplex: "half",
+    body: JSON.stringify(body),
   });
 
-  const body = await upstream.json();
-  return NextResponse.json(body, { status: upstream.status });
+  const data = await upstream.json();
+  return NextResponse.json(data, { status: upstream.status });
 }
