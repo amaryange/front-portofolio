@@ -5,6 +5,9 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/shiki/**/*"],
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
