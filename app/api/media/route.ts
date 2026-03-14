@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
       Authorization: `Bearer ${token}`,
       "content-type": req.headers.get("content-type") ?? "",
     },
-    // @ts-expect-error duplex requis pour le streaming en Node.js
     body: req.body,
     duplex: "half",
   });
