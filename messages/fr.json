@@ -23,8 +23,7 @@
   "hero": {
     "role": "Ingénieur Fullstack & DevOps",
     "pitch": "Je conçois des backends scalables, développe des frontends performants, livre des applications mobiles et orchestre l’infrastructure qui les fait tourner.\uD83D\uDE80",
-    "ctaProjects": "Voir mes projets ↓",
-    "ctaCV": "Télécharger le CV"
+    "ctaProjects": "Voir mes projets ↓"
   },
   "about": {
     "label": "01 / À PROPOS",

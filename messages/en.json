@@ -23,8 +23,7 @@
   "hero": {
     "role": "Fullstack & DevOps Engineer",
     "pitch": "I design scalable backends, build high-performance frontends, deliver mobile applications, and orchestrate the infrastructure that runs them. \uD83D\uDE80",
-    "ctaProjects": "View my projects ↓",
-    "ctaCV": "Download CV"
+    "ctaProjects": "View my projects ↓"
   },
   "about": {
     "label": "01 / ABOUT",

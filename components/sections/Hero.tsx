@@ -152,13 +152,6 @@ export default function Hero() {
             >
               {t("ctaProjects")}
             </a>
-            <a
-              href="/cv.pdf"
-              download
-              className="inline-flex h-12 items-center justify-center rounded-full border border-border px-6 font-mono text-sm font-medium text-text-secondary transition-all duration-150 hover:border-accent hover:text-text-primary active:scale-95"
-            >
-              {t("ctaCV")}
-            </a>
           </motion.div>
 
           <motion.div
