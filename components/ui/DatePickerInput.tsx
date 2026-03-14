@@ -52,7 +52,7 @@ const dpClassNames = {
   disabled: "!opacity-20 !cursor-not-allowed",
 };
 
-function Chevron({ orientation }: { orientation: "left" | "right" }) {
+function Chevron({ orientation }: { className?: string; size?: number; disabled?: boolean; orientation?: "left" | "right" | "up" | "down" }) {
   return (
     <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       {orientation === "left"

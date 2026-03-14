@@ -369,7 +369,7 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
                   disabled={{ before: new Date() }}
                   locale={fr}
                   components={{
-                    Chevron: ({ orientation }) => (
+                    Chevron: ({ orientation }: { className?: string; size?: number; disabled?: boolean; orientation?: "left" | "right" | "up" | "down" }) => (
                       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                         {orientation === "left"
                           ? <polyline points="15 18 9 12 15 6" />
