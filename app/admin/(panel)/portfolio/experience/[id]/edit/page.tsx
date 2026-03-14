@@ -14,13 +14,9 @@ export default async function EditExperiencePage({
 }) {
   const { id } = await params;
 
-  let exp: Experience;
-  try {
-    const res = await serverFetch<{ data: Experience }>(`/admin/experiences/${id}`);
-    exp = res.data;
-  } catch {
-    notFound();
-  }
+  const res = await serverFetch<{ data: Experience }>(`/admin/experiences/${id}`).catch(() => null);
+  if (!res) notFound();
+  const exp = res.data;
 
   const initial: ExperienceFormData = {
     locale: exp.locale,

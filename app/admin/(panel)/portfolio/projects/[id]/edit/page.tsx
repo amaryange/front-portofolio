@@ -14,13 +14,9 @@ export default async function EditProjectPage({
 }) {
   const { id } = await params;
 
-  let project: Project;
-  try {
-    const res = await serverFetch<{ data: Project }>(`/admin/projects/${id}`);
-    project = res.data;
-  } catch {
-    notFound();
-  }
+  const res = await serverFetch<{ data: Project }>(`/admin/projects/${id}`).catch(() => null);
+  if (!res) notFound();
+  const project = res.data;
 
   const initial: ProjectFormData = {
     locale: project.locale,

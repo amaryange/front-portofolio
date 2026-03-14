@@ -601,7 +601,7 @@ export default function MDXEditor({ initialData, existingId }: MDXEditorProps) {
         {view !== "editor" && (
           <div className={`overflow-y-auto ${view === "split" ? "w-1/2" : "w-full"}`}>
             <div className="border-b border-border px-6 py-3">
-              <p className="font-mono text-xs tracking-wider text-text-muted">// aperçu</p>
+              <p className="font-mono text-xs tracking-wider text-text-muted">{"// aperçu"}</p>
             </div>
 
             <div className="px-8 py-8">

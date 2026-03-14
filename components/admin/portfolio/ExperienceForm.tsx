@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import DatePickerInput from "@/components/ui/DatePickerInput";
 import {
   saveExperienceAction,
   deleteExperienceAction,
@@ -33,7 +35,7 @@ function emptyData(): ExperienceFormData {
 export default function ExperienceForm({ initial, existingId }: Props) {
   const router = useRouter();
   const [data, setData] = useState<ExperienceFormData>(initial ?? emptyData());
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving">("idle");
   const [showDelete, setShowDelete] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -54,18 +56,16 @@ export default function ExperienceForm({ initial, existingId }: Props) {
     update({ points: data.points.filter((_, i) => i !== idx) });
 
   const handleSave = () => {
+    if (!data.startDate) { toast.error("La date de début est requise"); return; }
     setSaveStatus("saving");
     startTransition(async () => {
       const result = await saveExperienceAction(data, existingId);
+      setSaveStatus("idle");
       if (result.error) {
-        setSaveStatus("error");
-        setTimeout(() => setSaveStatus("idle"), 3000);
+        toast.error(result.error);
       } else {
-        setSaveStatus("saved");
-        setTimeout(() => {
-          setSaveStatus("idle");
-          if (isNew) router.push("/admin/portfolio");
-        }, 1200);
+        toast.success(isNew ? "Expérience créée" : "Modifications enregistrées");
+        if (isNew) router.push("/admin/portfolio");
       }
     });
   };
@@ -121,20 +121,19 @@ export default function ExperienceForm({ initial, existingId }: Props) {
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className={labelCls}>DATE DE DÉBUT</label>
-            <input
-              type="date"
-              className={inputCls}
+            <DatePickerInput
               value={data.startDate}
-              onChange={(e) => update({ startDate: e.target.value })}
+              onChange={(v) => update({ startDate: v })}
+              placeholder="Début"
+              clearable={false}
             />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className={labelCls}>DATE DE FIN (vide = présent)</label>
-            <input
-              type="date"
-              className={inputCls}
+            <DatePickerInput
               value={data.endDate}
-              onChange={(e) => update({ endDate: e.target.value })}
+              onChange={(v) => update({ endDate: v })}
+              placeholder="En cours"
             />
           </div>
         </div>
@@ -218,22 +217,17 @@ export default function ExperienceForm({ initial, existingId }: Props) {
         )}
 
         <div className="flex items-center gap-3">
-          <AnimatePresence mode="wait">
-            {saveStatus !== "idle" && (
+          <AnimatePresence>
+            {saveStatus === "saving" && (
               <motion.span
-                key={saveStatus}
+                key="saving"
                 initial={{ opacity: 0, x: 8 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 8 }}
                 transition={{ duration: 0.2 }}
-                className={`font-mono text-xs ${
-                  saveStatus === "saved" ? "text-accent" :
-                  saveStatus === "error" ? "text-red-400" : "text-text-muted"
-                }`}
+                className="font-mono text-xs text-text-muted"
               >
-                {saveStatus === "saving" && "Sauvegarde…"}
-                {saveStatus === "saved"  && "✓ Enregistré"}
-                {saveStatus === "error"  && "✗ Erreur"}
+                Sauvegarde…
               </motion.span>
             )}
           </AnimatePresence>
