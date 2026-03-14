@@ -39,6 +39,26 @@ const mdxOptions = {
   },
 } as const;
 
+async function MDXContent({ source }: { source: string }) {
+  try {
+    return (
+      <MDXRemote
+        source={source}
+        // @ts-expect-error rehype-pretty-code type mismatch with next-mdx-remote
+        options={mdxOptions}
+        components={mdxComponents}
+      />
+    );
+  } catch (err) {
+    console.error("[MDXContent] render error:", err);
+    return (
+      <p className="font-mono text-sm text-text-muted">
+        Le contenu de cet article n&apos;a pas pu être affiché.
+      </p>
+    );
+  }
+}
+
 export default async function BlogPostPage({ params }: PageProps) {
   const { locale, slug } = await params;
 
@@ -110,12 +130,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         {/* MDX content */}
         <div className="blog-prose">
-          <MDXRemote
-            source={post.content}
-            // @ts-expect-error rehype-pretty-code type mismatch with next-mdx-remote
-            options={mdxOptions}
-            components={mdxComponents}
-          />
+          <MDXContent source={post.content} />
         </div>
       </article>
     </main>
