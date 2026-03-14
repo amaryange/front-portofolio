@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
+import { createHighlighter } from "shiki/bundle/full";
 import { getPost } from "@/lib/api/posts";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import ArticleTracker from "@/components/analytics/ArticleTracker";
@@ -29,6 +30,7 @@ const mdxOptions = {
       [
         rehypePrettyCode,
         {
+          getHighlighter: createHighlighter,
           theme: "one-dark-pro",
           keepBackground: false,
         },
