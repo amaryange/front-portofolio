@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { Syne, DM_Mono, DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import "highlight.js/styles/github-dark.css";
 import PostHogProvider from "@/components/providers/PostHogProvider";
+
+export const metadata: Metadata = {
+  verification: {
+    google: "IjgL6_opFH4psJVFTLb70oCaJUP0FBOYinzv7IGF6Wg",
+  },
+};
 
 // Les polices restent ici pour éviter leur redéclaration dans le layout [locale]
 const syne = Syne({
