@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPostHogAnalyticsPage } from "@/lib/posthog-server";
+import { getPostHogAnalyticsPage, getPostHogDashboardStats } from "@/lib/posthog-server";
 
 export const dynamic = "force-dynamic";
 
@@ -118,7 +118,10 @@ export default async function AnalyticsPage({
   const visitPage = Math.max(1, parseInt(params.page ?? "1", 10));
   const countryPage = Math.max(1, parseInt(params.cp ?? "1", 10));
 
-  const data = await getPostHogAnalyticsPage();
+  const [data, stats] = await Promise.all([
+    getPostHogAnalyticsPage(),
+    getPostHogDashboardStats(),
+  ]);
 
   if (!data) {
     return (
@@ -167,6 +170,37 @@ export default async function AnalyticsPage({
           ← Dashboard
         </Link>
       </div>
+
+      {/* ── Sources / Réseaux ── */}
+      {stats && stats.bySource.length > 0 && (
+        <div className="overflow-hidden rounded-xl border border-border bg-surface">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3">
+            <p className="font-mono text-[0.65rem] tracking-wider text-text-muted">
+              {"// sources"} — 30 derniers jours
+            </p>
+            <span className="font-mono text-[0.6rem] text-text-muted">
+              {fmt(stats.pageviews30d)} pages vues · {fmt(stats.uniqueVisitors30d)} visiteurs
+            </span>
+          </div>
+          <div className="divide-y divide-border">
+            {stats.bySource.map(({ source, count, pct }) => (
+              <div key={source} className="flex items-center gap-4 px-5 py-3">
+                <span className="w-32 shrink-0 font-mono text-sm text-text-secondary">{source}</span>
+                <div className="flex-1">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-border">
+                    <div
+                      className="h-full rounded-full bg-accent-warm/60"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+                <span className="w-16 text-right font-mono text-sm text-text-primary">{fmt(count)}</span>
+                <span className="w-10 text-right font-mono text-xs text-text-muted">{pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Pays ── */}
       <div className="overflow-hidden rounded-xl border border-border bg-surface">
