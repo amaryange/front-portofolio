@@ -2,8 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { compileMDX } from "next-mdx-remote/rsc";
-import rehypePrettyCode from "rehype-pretty-code";
-import { createHighlighter } from "shiki/bundle/full";
+import rehypeHighlight from "rehype-highlight";
 import { getPost } from "@/lib/api/posts";
 import { mdxComponents } from "@/components/blog/MDXComponents";
 import ArticleTracker from "@/components/analytics/ArticleTracker";
@@ -26,18 +25,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const mdxOptions = {
   mdxOptions: {
-    rehypePlugins: [
-      [
-        rehypePrettyCode,
-        {
-          getHighlighter: createHighlighter,
-          theme: "one-dark-pro",
-          keepBackground: false,
-        },
-      ],
-    ],
+    rehypePlugins: [[rehypeHighlight, { detect: true }]],
   },
-} as const;
+};
 
 async function MDXContent({ source }: { source: string }) {
   try {

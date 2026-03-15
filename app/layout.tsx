@@ -1,6 +1,7 @@
 import { Syne, DM_Mono, DM_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import "highlight.js/styles/github-dark.css";
 import PostHogProvider from "@/components/providers/PostHogProvider";
 
 // Les polices restent ici pour éviter leur redéclaration dans le layout [locale]

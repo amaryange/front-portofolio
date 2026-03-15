@@ -7,12 +7,7 @@ const nextConfig: NextConfig = {
   // Empêche webpack de bundler ces packages — ils sont chargés depuis
   // node_modules à runtime. Sans ça, shiki et next-mdx-remote peuvent
   // avoir des problèmes avec les imports dynamiques lors du bundling.
-  serverExternalPackages: [
-    "next-mdx-remote",
-    "@mdx-js/mdx",
-    "shiki",
-    "rehype-pretty-code",
-  ],
+  serverExternalPackages: ["next-mdx-remote", "@mdx-js/mdx"],
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
