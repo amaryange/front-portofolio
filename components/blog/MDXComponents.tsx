@@ -3,9 +3,27 @@ import { YouTube } from "./YouTube";
 import { CodeBlock } from "./CodeBlock";
 import { VideoDemo } from "./VideoDemo";
 
+type CalloutType = "info" | "warning" | "danger" | "tip";
+
+const calloutStyles: Record<CalloutType, string> = {
+  info:    "border-blue-500/40 bg-blue-500/5 text-blue-300",
+  warning: "border-accent-warm/40 bg-accent-warm/5 text-accent-warm",
+  danger:  "border-red-500/40 bg-red-500/5 text-red-400",
+  tip:     "border-accent/40 bg-accent/5 text-accent",
+};
+
+function Callout({ type = "info", children }: { type?: CalloutType; children?: React.ReactNode }) {
+  return (
+    <div className={`my-6 rounded-lg border px-4 py-3 font-mono text-sm leading-relaxed ${calloutStyles[type] ?? calloutStyles.info}`}>
+      {children}
+    </div>
+  );
+}
+
 export const mdxComponents: MDXComponents = {
   YouTube,
   VideoDemo,
+  Callout,
 
   // Headings
   h2: (props) => (
