@@ -19,18 +19,23 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
 
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amarycode.dev";
+
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-    ),
+    metadataBase: new URL(base),
     title: t("title"),
     description: t("description"),
     authors: [{ name: "M. Amary" }],
+    alternates: {
+      canonical: `${base}/${locale}`,
+      languages: { fr: `${base}/fr`, en: `${base}/en` },
+    },
     openGraph: {
       type: "website",
       title: t("title"),
       description: t("description"),
       images: ["/og-image.png"],
+      locale,
     },
     twitter: {
       card: "summary_large_image",

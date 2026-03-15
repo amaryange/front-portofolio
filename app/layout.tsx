@@ -24,6 +24,22 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "M. Amary",
+  jobTitle: "Ingénieur Fullstack & DevOps",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://amarycode.dev",
+  sameAs: [
+    "https://github.com/amaryange",
+    "https://www.linkedin.com/in/amary-meless",
+  ],
+  knowsAbout: [
+    "Spring Boot", "Kubernetes", "React Native",
+    "Next.js", "AdonisJS", "Docker", "OpenTelemetry", "Grafana",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -36,6 +52,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `(function(){var s=localStorage.getItem('theme');var d=document.documentElement;d.setAttribute('data-theme',s||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));})();`,
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body
