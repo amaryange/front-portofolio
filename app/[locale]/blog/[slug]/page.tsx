@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { createHighlighter } from "shiki/bundle/full";
 import { getPost } from "@/lib/api/posts";
@@ -41,16 +41,17 @@ const mdxOptions = {
 
 async function MDXContent({ source }: { source: string }) {
   try {
-    return (
-      <MDXRemote
-        source={source}
-        // @ts-expect-error rehype-pretty-code type mismatch with next-mdx-remote
-        options={mdxOptions}
-        components={mdxComponents}
-      />
-    );
+    // compileMDX est un vrai await — les erreurs sont attrapables par try/catch,
+    // contrairement à <MDXRemote /> qui retourne un élément React exécuté plus tard.
+    const { content } = await compileMDX({
+      source,
+      // @ts-expect-error rehype-pretty-code type mismatch with next-mdx-remote
+      options: mdxOptions,
+      components: mdxComponents,
+    });
+    return <>{content}</>;
   } catch (err) {
-    console.error("[MDXContent] render error:", err);
+    console.error("[MDXContent] compile error:", err);
     return (
       <p className="font-mono text-sm text-text-muted">
         Le contenu de cet article n&apos;a pas pu être affiché.
